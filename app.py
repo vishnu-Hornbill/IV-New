@@ -14,15 +14,21 @@ def main():
     st.sidebar.title('Analysis')
     st.sidebar.write('This app displays an IV curve.')
 
-    st.title('IV Curve Analysis')
-
     uploaded_file = st.file_uploader("Upload Excel file", type=["xlsx"])
 
     if uploaded_file is not None:
         try:
             data = pd.read_excel(uploaded_file)
             st.write(data.head())
-            plot_iv_curve(data)
+
+            # Create a dropdown to select the type of measuring device
+            measuring_device = st.selectbox("Select Measuring Device", data['Measuring Device'].unique())
+
+            # Filter data based on selected measuring device
+            filtered_data = data[data['Measuring Device'] == measuring_device]
+
+            # Plot IV curve for the selected measuring device
+            plot_iv_curve(filtered_data)
         except Exception as e:
             st.error(f"Error: {e}")
 
